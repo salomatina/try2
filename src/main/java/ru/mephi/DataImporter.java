@@ -7,29 +7,30 @@ import java.io.IOException;
 
 public class DataImporter {
 
-    double[] variablesCache;
-    XSSFSheet sheet;
-
-    public void findSheet() throws IOException {
-        String path = "C:\\Users\\Елена\\IdeaProjects\\try2\\src\\main\\resources\\ru\\mephi\\ДЗ2 (1).xlsx";
+    public XSSFSheet findSheet(String path) throws IOException {
         XSSFWorkbook book = new XSSFWorkbook(path);
-        sheet = book.getSheetAt(1);
+        XSSFSheet sheet = book.getSheetAt(1);
         book.close();
+        return sheet;
     }
 
-    public double[] readData(int columnIndex) throws IOException {
-        //String path = "C:\\Users\\Елена\\IdeaProjects\\w2\\src\\main\\resources\\ДЗ2 (1).xlsx";
-        if (sheet == null) {
-            findSheet();
-        }
+    public double[] readData(int columnIndex, XSSFSheet sheet) {
         int rowNumber = sheet.getLastRowNum();
-        variablesCache = new double[rowNumber];
+        double[] variables = new double[rowNumber];
         for (int i = 1; i <= rowNumber; i++) {
-            variablesCache[i - 1] = sheet.getRow(i).getCell(columnIndex).getNumericCellValue();
+            variables[i - 1] = sheet.getRow(i).getCell(columnIndex).getNumericCellValue();
         }
 
+        return variables;
+    }
 
-        return variablesCache;
+    public double[][] readAllData(XSSFSheet sheet) {
+        int rowNumber = sheet.getLastRowNum();
+        double[][] variables = new double[rowNumber][];
+        for (int i = 0; i < 3; i++) {
+            variables[i] = readData(i, sheet);
+        }
+        return variables;
     }
 
 }
